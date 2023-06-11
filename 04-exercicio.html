@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.272">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Ariane Hayana">
+<meta name="dcterms.date" content="2023-06-11">
+
+<title>Explorando Indicadores Sociais com R e RStudio</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="04-exercicio_files/libs/clipboard/clipboard.min.js"></script>
+<script src="04-exercicio_files/libs/quarto-html/quarto.js"></script>
+<script src="04-exercicio_files/libs/quarto-html/popper.min.js"></script>
+<script src="04-exercicio_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="04-exercicio_files/libs/quarto-html/anchor.min.js"></script>
+<link href="04-exercicio_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="04-exercicio_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="04-exercicio_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="04-exercicio_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="04-exercicio_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="04-exercicio_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="04-exercicio_files/libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+
+
+<link rel="stylesheet" href="custom.css">
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Explorando Indicadores Sociais com R e RStudio</h1>
+<p class="subtitle lead">Exercícios - Unidade 4</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Ariane Hayana </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 11, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="apresentação" class="level1">
+<h1>Apresentação</h1>
+<p>Este exercício foi elaborado no curso <em>Explorando Indicadores Sociais com o R e o RStudio</em>, que faz parte da iniciativa de extensão do Observatório de Populações e Políticas Públicas (ObPPP), em parceira com o InfoSoc, ambos projetos vinculados ao Departamento de Ciências Sociais da Universidade Estadual de Londrina (UEL), para difundir métodos computacionais que possam fortalecer a capacidade de avaliação e monitoramento de políticas públicas, sobretudo as ações municipais que atendam aos Objetivos do Desenvolvimento Sustentável (ODS).</p>
+<p>Professores:</p>
+<ul>
+<li><p>Prof.&nbsp;Ronaldo Baltar</p></li>
+<li><p>Prof.ª Cláudia Siqueira Baltar</p></li>
+</ul>
+</section>
+<section id="preparação" class="level1">
+<h1>Preparação</h1>
+<section id="pacotes" class="level2">
+<h2 class="anchored" data-anchor-id="pacotes">Pacotes</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pacotes -----------------------------------------------------------------</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="leitura" class="level2">
+<h2 class="anchored" data-anchor-id="leitura">Leitura</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Leitura -----------------------------------------------------------------</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dados <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"c1r1_dic_tbl.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="limpeza" class="level2">
+<h2 class="anchored" data-anchor-id="limpeza">Limpeza</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Limpeza dos nomes das variáveis -----------------------------------------</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>dados <span class="ot">&lt;-</span> <span class="fu">clean_names</span>(dados)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="sobre-o-banco-de-dados" class="level2">
+<h2 class="anchored" data-anchor-id="sobre-o-banco-de-dados">Sobre o banco de dados</h2>
+<p>Dados oriundos do <a href="http://www.atlasbrasil.org.br/acervo/biblioteca">Atlas Brasil</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sobre o banco de dados --------------------------------------------------</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(dados)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 5,186
+Columns: 15
+$ ano_x        &lt;dbl&gt; 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 2010, 201~
+$ uf           &lt;dbl&gt; 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 1~
+$ codmun7      &lt;dbl&gt; 1100015, 1100023, 1100031, 1100049, 1100056, 1100064, 110~
+$ municipio    &lt;chr&gt; "ALTA FLORESTA D'OESTE", "ARIQUEMES", "CABIXI", "CACOAL",~
+$ idhm         &lt;dbl&gt; 0.641, 0.702, 0.650, 0.718, 0.692, 0.685, 0.613, 0.611, 0~
+$ idhm_e       &lt;dbl&gt; 0.526, 0.600, 0.559, 0.620, 0.602, 0.584, 0.473, 0.493, 0~
+$ idhm_l       &lt;dbl&gt; 0.763, 0.806, 0.757, 0.821, 0.799, 0.814, 0.774, 0.751, 0~
+$ idhm_r       &lt;dbl&gt; 0.657, 0.716, 0.650, 0.727, 0.688, 0.676, 0.630, 0.616, 0~
+$ classe_idhm  &lt;chr&gt; "3) Médio", "4) Alto", "3) Médio", "4) Alto", "3) Médio",~
+$ classe_pop   &lt;chr&gt; "3) 20.001 a 100.000", "3) 20.001 a 100.000", "2) 5.001 a~
+$ urbano_rural &lt;chr&gt; "Urbano", "Urbano", "Rural", "Urbano", "Urbano", "Urbano"~
+$ ano_y        &lt;dbl&gt; 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 2013, 201~
+$ nome         &lt;chr&gt; "Alta Floresta D&amp;apos;Oeste", "Ariquemes", "Cabixi", "Cac~
+$ ideb_ai      &lt;dbl&gt; 5.4, 4.9, 5.6, 5.8, 6.2, 6.2, 5.4, 5.4, 5.8, 4.7, 5.1, 5.~
+$ ideb_af      &lt;dbl&gt; 3.9, 4.2, 4.1, 4.5, 3.6, 3.9, 4.3, 2.6, 4.9, 3.5, 3.7, 3.~</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="exercícios" class="level1">
+<h1>Exercícios</h1>
+<section id="exercício-1-crie-um-gráfico-de-barras-com-a-variável-classe_idhm." class="level3">
+<h3 class="anchored" data-anchor-id="exercício-1-crie-um-gráfico-de-barras-com-a-variável-classe_idhm.">Exercício 1: Crie um gráfico de barras com a variável classe_idhm.</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="04-exercicio_files/figure-html/unnamed-chunk-5-1.png" class="quarto-discovered-preview-image img-fluid" width="864"></p>
+</div>
+</div>
+</section>
+<section id="exercício-2-crie-um-gráfico-de-barras-com-a-variável-classe_pop." class="level3">
+<h3 class="anchored" data-anchor-id="exercício-2-crie-um-gráfico-de-barras-com-a-variável-classe_pop.">Exercício 2: Crie um gráfico de barras com a variável classe_pop.</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="04-exercicio_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="exercício-3-crie-um-gráfico-de-barras-com-a-variável-urbano_rural." class="level3">
+<h3 class="anchored" data-anchor-id="exercício-3-crie-um-gráfico-de-barras-com-a-variável-urbano_rural.">Exercício 3: Crie um gráfico de barras com a variável urbano_rural.</h3>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="04-exercicio_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="exercício-4-crie-um-gráfico-boxplot-da-variável-ideb_ai-anos-iniciais-por-classe_idhm." class="level3">
+<h3 class="anchored" data-anchor-id="exercício-4-crie-um-gráfico-boxplot-da-variável-ideb_ai-anos-iniciais-por-classe_idhm.">Exercício 4: Crie um gráfico Boxplot da variável IDEB_AI (Anos Iniciais) por classe_idhm.</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="04-exercicio_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+</section>
+<section id="exercício-5-crie-um-gráfico-boxplot-da-variável-ideb_af-anos-finais-por-classe_idhm." class="level3">
+<h3 class="anchored" data-anchor-id="exercício-5-crie-um-gráfico-boxplot-da-variável-ideb_af-anos-finais-por-classe_idhm.">Exercício 5: Crie um gráfico Boxplot da variável IDEB_AF (Anos finais) por classe_idhm.</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="04-exercicio_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+</section>
+<section id="exercício-6-crie-um-gráfico-boxplot-do-idhm-por-classe_pop." class="level3">
+<h3 class="anchored" data-anchor-id="exercício-6-crie-um-gráfico-boxplot-do-idhm-por-classe_pop.">Exercício 6: Crie um gráfico Boxplot do IDHM por classe_pop.</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="04-exercicio_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+</section>
+<section id="exercício-7-crie-um-gráfico-boxplot-do-idhm_e-por-classe_pop." class="level3">
+<h3 class="anchored" data-anchor-id="exercício-7-crie-um-gráfico-boxplot-do-idhm_e-por-classe_pop.">Exercício 7: Crie um gráfico Boxplot do IDHM_E por classe_pop.</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="04-exercicio_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+</section>
+<section id="exercício-8-crie-um-gráfico-boxplot-do-idhm_l-por-classe_pop." class="level3">
+<h3 class="anchored" data-anchor-id="exercício-8-crie-um-gráfico-boxplot-do-idhm_l-por-classe_pop.">Exercício 8: Crie um gráfico Boxplot do IDHM_L por classe_pop.</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="04-exercicio_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+</section>
+<section id="exercício-9-crie-um-gráfico-boxplot-do-idhm_r-por-classe_pop." class="level3">
+<h3 class="anchored" data-anchor-id="exercício-9-crie-um-gráfico-boxplot-do-idhm_r-por-classe_pop.">Exercício 9: Crie um gráfico Boxplot do IDHM_R por classe_pop.</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="04-exercicio_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+</section>
+<section id="exercício-10-de-maneira-sucinta-numa-primeira-observação-escreva-o-que-você-consegue-perceber-comparando-os-gráficos-boxplot-idhm_l-idhm_r-idhm_e-por-classe_pop." class="level3">
+<h3 class="anchored" data-anchor-id="exercício-10-de-maneira-sucinta-numa-primeira-observação-escreva-o-que-você-consegue-perceber-comparando-os-gráficos-boxplot-idhm_l-idhm_r-idhm_e-por-classe_pop.">Exercício 10: De maneira sucinta, numa primeira observação, escreva o que você consegue perceber, comparando os gráficos boxplot IDHM_L, IDHM_R, IDHM_E por classe_pop.</h3>
+<p>Em uma avaliação global sobre os três subíndices que compõem o IDHM é possível visualizar que nas classes que compreendem os grupos 1 (até 5.000), 2 (de 5.001 a 20.000) e 3 (20.001 a 100.000) há indícios de maior dispersão dos dados, ou seja, há mais variabilidade nos dados que estão entre o primeiro (Q1) e terceiro quartil (Q3). Por outro lado, já nas classes com mais de 500.000 habitantes ocorre o inverso, a caixa é menor nos três subíndices, o que indica que os dados são mais homogêneos para este grupo, com menos variabilidade.</p>
+</section>
+<section id="exercício-11-crie-um-gráfico-violino-da-variável-ideb_ai-anos-iniciais-por-classe_idhm." class="level3">
+<h3 class="anchored" data-anchor-id="exercício-11-crie-um-gráfico-violino-da-variável-ideb_ai-anos-iniciais-por-classe_idhm.">Exercício 11: Crie um gráfico Violino da variável IDEB_AI (Anos Iniciais) por classe_idhm.</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="04-exercicio_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+</section>
+<section id="exercício-12-crie-um-gráfico-violino-da-variável-ideb_af-anos-finais-por-classe_idhm." class="level3">
+<h3 class="anchored" data-anchor-id="exercício-12-crie-um-gráfico-violino-da-variável-ideb_af-anos-finais-por-classe_idhm.">Exercício 12: Crie um gráfico Violino da variável IDEB_AF (Anos finais) por classe_idhm.</h3>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="04-exercicio_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="exercício-13-crie-um-gráfico-único-combinando-os-gráficos-jitter-violino-e-boxplot-com-o-ideb_af-por-urbano_rural.-defina-a-cor-dos-pontos-jitter-como-brown-o-tamanho-do-ponto-como-1.-defina-a-transparência-do-gráfico-violino-alpha-em-60-0.6.-a-cor-de-preenchimento-fill-do-gráfico-violino-deve-ser-alaranjado-ff8c00.-defina-o-preenchimento-do-gráfico-boxplot-fill-como-vazio-na.-a-cor-do-ponto-outlier-deve-ser-vermelha-red-e-o-tamanho-4." class="level3">
+<h3 class="anchored" data-anchor-id="exercício-13-crie-um-gráfico-único-combinando-os-gráficos-jitter-violino-e-boxplot-com-o-ideb_af-por-urbano_rural.-defina-a-cor-dos-pontos-jitter-como-brown-o-tamanho-do-ponto-como-1.-defina-a-transparência-do-gráfico-violino-alpha-em-60-0.6.-a-cor-de-preenchimento-fill-do-gráfico-violino-deve-ser-alaranjado-ff8c00.-defina-o-preenchimento-do-gráfico-boxplot-fill-como-vazio-na.-a-cor-do-ponto-outlier-deve-ser-vermelha-red-e-o-tamanho-4.">Exercício 13: Crie um gráfico único, combinando os gráficos Jitter, Violino e Boxplot com o IDEB_AF por urbano_rural. Defina a cor dos pontos jitter como “brown”, o tamanho do ponto como 1. Defina a transparência do gráfico violino (alpha) em 60% (0.6). A cor de preenchimento (fill) do gráfico Violino deve ser alaranjado (#FF8C00). Defina o preenchimento do gráfico Boxplot (fill) como vazio (NA). A cor do ponto outlier deve ser vermelha (“red”) e o tamanho 4.</h3>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="04-exercicio_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="exercício-14-crie-um-gráfico-único-combinando-os-gráficos-jitter-violino-e-boxplot-com-o-ideb_ai-por-urbano_rural.-defina-a-cor-dos-pontos-jitter-como-brown-o-tamanho-do-ponto-como-1.-defina-a-transparência-do-gráfico-violino-alpha-em-60-0.6.-a-cor-de-preenchimento-fill-do-gráfico-violino-deve-ser-alaranjado-ff8c00.-defina-o-preenchimento-do-gráfico-boxplot-fill-como-vazio-na.-a-cor-do-ponto-outlier-deve-ser-vermelha-red-e-o-tamanho-4." class="level3">
+<h3 class="anchored" data-anchor-id="exercício-14-crie-um-gráfico-único-combinando-os-gráficos-jitter-violino-e-boxplot-com-o-ideb_ai-por-urbano_rural.-defina-a-cor-dos-pontos-jitter-como-brown-o-tamanho-do-ponto-como-1.-defina-a-transparência-do-gráfico-violino-alpha-em-60-0.6.-a-cor-de-preenchimento-fill-do-gráfico-violino-deve-ser-alaranjado-ff8c00.-defina-o-preenchimento-do-gráfico-boxplot-fill-como-vazio-na.-a-cor-do-ponto-outlier-deve-ser-vermelha-red-e-o-tamanho-4.">Exercício 14: Crie um gráfico único, combinando os gráficos Jitter, Violino e Boxplot com o IDEB_AI por urbano_rural. Defina a cor dos pontos jitter como “brown”, o tamanho do ponto como 1. Defina a transparência do gráfico violino (alpha) em 60% (0.6). A cor de preenchimento (fill) do gráfico Violino deve ser alaranjado (#FF8C00). Defina o preenchimento do gráfico Boxplot (fill) como vazio (NA). A cor do ponto outlier deve ser vermelha (“red”) e o tamanho 4.</h3>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="04-exercicio_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
